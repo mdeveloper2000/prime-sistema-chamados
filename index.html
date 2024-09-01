@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://unpkg.com/primevue/umd/primevue.min.js"></script>
+    <script src="https://unpkg.com/@primevue/themes/umd/lara.min.js"></script>
+    <link href="https://unpkg.com/primeicons/primeicons.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <title>Prime Sistema Chamados</title>
+</head>
+
+<body>
+
+    <div id="app">
+        <p-confirmdialog></p-confirmdialog>
+        <p-toast position="top-right"></p-toast>
+        <p-panel header="Prime Sistema Chamados">
+            <i class="pi pi-list-check"></i> Sistema de Chamados, desenvolvido com Vue.js e PrimeVue
+        </p-panel>
+        <p-button label="Adicionar Chamado" class="new-button" @click="newItem = true" icon="pi pi-plus-circle"></p-button>
+        <p-dialog v-model:visible="newItem" modal header="Novo Chamado">
+            <div>
+                <p-inputtext v-model.trim="problem" autocomplete="off" placeholder="Problema" @blur="problem=problem.toUpperCase()" maxlength="20"></p-inputtext>
+            </div>
+            <div>
+                <p-select v-model="priority" :options="priorityTypes" placeholder="Prioridade"></p-select>
+            </div>
+            <div>
+                <p-textarea v-model.trim="description" rows="4" cols="30" maxlength="100" placeholder="Descrição do problema"></p-textarea>
+            </div>
+            <div class="actions">
+                <p-button type="button" label="Cancelar" severity="secondary" @click="clearNewItem" icon="pi pi-stop-circle"></p-button>
+                <p-button type="button" label="Salvar" @click="save" icon="pi pi-save"></p-button>
+            </div>
+            <div>
+                <p-message severity="error" v-if="hasErrors" :closable="false">
+                    <i class="pi pi-exclamation-triangle"></i> Preencha todos os campos
+                </p-message>
+            </div>
+        </p-dialog>
+        <p-dialog v-model:visible="editItem" modal header="Editar Chamado">
+            <div>
+                <p-inputtext v-model.trim="problemEdited" autocomplete="off" placeholder="Problema" @blur="problemEdited=problemEdited.toUpperCase()" maxlength="20"></p-inputtext>
+            </div>
+            <div>
+                <p-select v-model="priorityEdited" :options="priorityTypes" placeholder="Priority"></p-select>
+            </div>
+            <div>
+                <p-textarea v-model.trim="descriptionEdited" rows="4" cols="30" maxlength="100" placeholder="Descrição do problema"></p-textarea>
+            </div>
+            <div class="actions">
+                <p-button type="button" label="Cancelar" severity="secondary" @click="clearEditItem" icon="pi pi-stop-circle"></p-button>
+                <p-button type="button" label="Atualizar" @click="update" icon="pi pi-save"></p-button>
+            </div>
+            <div>
+                <p-message severity="error" v-if="hasErrors" :closable="false">
+                    <i class="pi pi-exclamation-triangle"></i> Preencha todos os campos
+                </p-message>
+            </div>
+        </p-dialog>
+        <p-datatable :value="list">
+            <template #header>
+                <h3>Lista de Chamados</h3>
+            </template>
+            <p-column field="problem" header="Problema"></p-column>
+            <p-column field="priority" header="Prioridade"></p-column>            
+            <p-column field="description" header="Descrição"></p-column>
+            <p-column field="id" header="Ações" class="actions">
+                <template #body="slotProps">
+                    <p-button icon="pi pi-file-edit" severity="info" rounded raised @click="edit(slotProps.data.id)"></p-button>
+                    <p-button icon="pi pi-trash" severity="danger" rounded raised @click="deleteItem(slotProps.data.id)"></p-button>
+                </template>
+            </p-column>
+            <template #footer> 
+                <h3>Total de chamados: {{ list ? list.length : 0 }}</h3>
+            </template>
+        </p-datatable>
+    </div>
+    
+    <script src="app.js"></script>
+
+</body>
+
+</html>
